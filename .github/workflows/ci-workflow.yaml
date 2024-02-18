@@ -36,7 +36,7 @@ jobs:
           context: frontend
           push: ${{ github.event_name != 'pull_request' }}
           tags: |
-            tmayweather/clutch-ui:${{ github.sha[0:7] }}
+            tmayweather/clutch-ui:${{ github.sha | slice(0, 7) }}
             tmayweather/clutch-ui:latest
           labels: ${{ steps.meta.outputs.labels }}
 
