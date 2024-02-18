@@ -55,6 +55,7 @@ jobs:
 
       - name: Update backend image in argocd
         run: |
+          cd projects/overlays/dev
           kustomize edit set image tmayweather/clutch-api:${{ steps.meta_backend.outputs.tags }}
           git add kustomize.yaml
           git commit -m "Update backend to version ${{ steps.meta_backend.outputs.tags }}"
@@ -62,6 +63,7 @@ jobs:
 
       - name: Update frontend image in argocd
         run: |
+          cd projects/overlays/dev
           kustomize edit set image tmayweather/clutch-ui:${{ steps.meta_frontend.outputs.tags }}
           git add kustomize.yaml
           git commit -m "Update frontend to version ${{ steps.meta_frontend.outputs.tags }}"
