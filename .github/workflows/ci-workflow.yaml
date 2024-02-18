@@ -47,21 +47,21 @@ jobs:
       #     labels: ${{ steps.meta.outputs.labels }}
 
 
-      - name: Get manifest repo
-        uses: actions/checkout@v4
-        with:
-          repository: tmayweather/argocd-test
-          ref: main
-          sparse-checkout: |
-            argocd
+      # - name: Get manifest repo
+      #   uses: actions/checkout@v4
+      #   with:
+      #     repository: tmayweather/argocd-test
+      #     ref: main
+      #     sparse-checkout: |
+      #       argocd
 
-      - name: Update backend and frontend image in argocd
-        working-directory: ./argocd/projects/overlays/dev
-        run: |
-          kustomize edit set image tmayweather/clutch-ui=${{ steps.meta.outputs.tags }} .
-          git add .
-          git commit -m "Update clutch to version ${{ steps.meta.outputs.tags }}"
-          git push
+      # - name: Update backend and frontend image in argocd
+      #   working-directory: ./argocd/projects/overlays/dev
+      #   run: |
+      #     kustomize edit set image tmayweather/clutch-ui=${{ steps.meta.outputs.tags }} .
+      #     git add .
+      #     git commit -m "Update clutch to version ${{ steps.meta.outputs.tags }}"
+      #     git push
 
 
 
