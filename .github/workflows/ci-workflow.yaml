@@ -36,7 +36,7 @@ jobs:
           context: frontend
           push: ${{ github.event_name != 'pull_request' }}
           tags: |
-            tmayweather/clutch-ui:${{ github.sha}}
+            tmayweather/clutch-ui:${{ github.sha[0:7] }}
             tmayweather/clutch-ui:latest
           labels: ${{ steps.meta.outputs.labels }}
 
@@ -60,7 +60,7 @@ jobs:
       - name: Update backend and frontend image in argocd
         working-directory: ./argocd/projects/overlays/dev
         run: |
-          kustomize edit set image tmayweather/clutch-ui:${{ github.sha }} .
+          kustomize edit set image tmayweather/clutch-ui=tmayweather/clutch-ui:${{ github.sha }} .
           git add .
           git commit -m "Update clutch to version ${{ steps.meta.outputs.tags }}"
           git push
