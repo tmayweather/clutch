@@ -49,7 +49,7 @@ jobs:
       - name: Call manifest repo
         uses: actions/checkout@v2
         with:
-          repository: argocd-test
+          repository: tmayweather/argocd-test
           ref: main
           path: /projects/overlays/dev
 
