@@ -52,7 +52,8 @@ jobs:
         with:
           repository: tmayweather/argocd-test
           ref: main
-          path: ./argocd/projects/overlays/dev
+          sparse-checkout: |
+             argocd
 
       - name: Update backend and frontend image in argocd
         working-directory: ./argocd/projects/overlays/dev
