@@ -58,6 +58,7 @@ jobs:
         working-directory: argocd/projects/overlays/dev
         run: |
           pwd
+          ls
           kustomize edit set image ${{ steps.meta.outputs.tags }} .
           git add .
           git commit -m "Update clutch to version ${{ steps.meta.outputs.tags }}"
