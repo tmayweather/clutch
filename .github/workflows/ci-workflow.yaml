@@ -64,7 +64,7 @@ jobs:
         uses: benc-uk/workflow-dispatch@v1
         with:
           token: ${{ secrets.PAT_TOKEN }}
-          repository: tmayweather/argocd-test
+          repo: tmayweather/argocd-test
           workflow: update-image.yaml
 
 
