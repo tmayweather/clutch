@@ -55,7 +55,7 @@ jobs:
           path: argocd/projects/overlays/dev
 
       - name: Update backend and frontend image in argocd
-        working-directory: ./argocd/projects/overlays/dev
+        working-directory: ../argocd/projects/overlays/dev
         run: |
           kustomize edit set image ${{ steps.meta.outputs.tags }} .
           git add .
