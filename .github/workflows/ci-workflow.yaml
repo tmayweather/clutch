@@ -46,20 +46,25 @@ jobs:
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
 
+      - name: Save frontend and backend tags to files
+        run: |
+          echo "${{ steps.meta.outputs.tags.frontend }}" > frontend-tags.txt
+          echo "${{ steps.meta.outputs.tags.backend }}" > backend-tags.txt
+
       - name: Upload Docker image tags as an artifact
         uses: actions/upload-artifact@v2
         with:
           name: docker-tags
           path: |
-            frontend-tags: ${{ steps.meta.outputs.tags.frontend }}
-            backend-tags: ${{ steps.meta.outputs.tags.backend }}
+            frontend-tags.txt
+            backend-tags.txt
 
 
       - name: Trigger workflow in argocd-test
-        uses: peter-evans/repository-dispatch@v2
+        uses: benc-uk/workflow-dispatch@v1
         with:
           token: ${{ secrets.PAT_TOKEN }}
           repository: tmayweather/argocd-test
-          workflow: update-image-argocd
+          workflow: update-image.yaml
 
 
