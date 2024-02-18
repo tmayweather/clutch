@@ -55,15 +55,21 @@ jobs:
         with:
           repository: tmayweather/argocd-test
           ref: main
-          path: argocd
+          path: argocd/projects/overlays/dev
+          run: |
+            kustomize edit set image tmayweather/clutch-api:${{ steps.meta_backend.outputs.tags }}
+            kustomize edit set image tmayweather/clutch-ui:${{ steps.meta_backend.outputs.tags }}
+            git add .
+            git commit -m "Update projecct to version ${{ steps.meta_backend.outputs.tags }}"
+            git push
 
-      - name: Update backend and frontend image in argocd
-        working-directory: argocd/projects/overlays/dev
-        run: |
-          kustomize edit set image tmayweather/clutch-api:${{ steps.meta_backend.outputs.tags }}
-          kustomize edit set image tmayweather/clutch-ui:${{ steps.meta_backend.outputs.tags }}
-          git add .
-          git commit -m "Update projecct to version ${{ steps.meta_backend.outputs.tags }}"
-          git push
+      # - name: Update backend and frontend image in argocd
+      #   working-directory: argocd/projects/overlays/dev
+      #   run: |
+      #     kustomize edit set image tmayweather/clutch-api:${{ steps.meta_backend.outputs.tags }}
+      #     kustomize edit set image tmayweather/clutch-ui:${{ steps.meta_backend.outputs.tags }}
+      #     git add .
+      #     git commit -m "Update projecct to version ${{ steps.meta_backend.outputs.tags }}"
+      #     git push
 
 
