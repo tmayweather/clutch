@@ -54,6 +54,10 @@ jobs:
           ref: main
           path: argocd/projects/overlays/dev
 
+      - name: Check current directory
+        run: |
+          pwd
+
       - name: Update backend and frontend image in argocd
         working-directory: argocd/projects/overlays/dev
         run: |
