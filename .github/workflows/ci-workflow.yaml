@@ -30,13 +30,22 @@ jobs:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
+      - name: Set outputs
+        id: vars
+        run: |
+          echo "sha_short=$(git rev-parse --short HEAD)"
+          echo "::set-output name=sha_short::$(git rev-parse --short HEAD)"
+
+      - name: Check outputs
+        run: echo ${{ steps.vars.outputs.sha_short }}
+
       - name: Build and push frontend
         uses: docker/build-push-action@v5
         with:
           context: frontend
           push: ${{ github.event_name != 'pull_request' }}
           tags: |
-            tmayweather/clutch-ui:${{ github.sha | slice(0, 7) }}
+            tmayweather/clutch-ui:${{ steps.vars.outputs.sha_short }}
             tmayweather/clutch-ui:latest
           labels: ${{ steps.meta.outputs.labels }}
 
