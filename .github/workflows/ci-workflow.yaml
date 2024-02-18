@@ -48,8 +48,8 @@ jobs:
 
       - name: Save tags to a file
         run: |
-          echo "frontend-tags: ${{ steps.meta_frontend.outputs.tags }}" > docker-tags.txt
-          echo "backend-tags: ${{ steps.meta_backend.outputs.tags }}" >> docker-tags.txt
+          echo "${{ steps.meta_frontend.outputs.tags }}" >> docker-tags.txt
+          echo "${{ steps.meta_backend.outputs.tags }}" >> docker-tags.txt
 
       - name: Upload Docker image tags as an artifact
         uses: actions/upload-artifact@v4
