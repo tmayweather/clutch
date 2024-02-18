@@ -63,6 +63,7 @@ jobs:
       - name: Trigger workflow in argocd-test
         uses: benc-uk/workflow-dispatch@v1
         with:
+          token: ${{ secrets.PAT_TOKEN }}
           repo: tmayweather/argocd-test
           workflow: update-image.yaml
 
