@@ -57,6 +57,7 @@ jobs:
       - name: Update backend and frontend image in argocd
         working-directory: argocd/projects/overlays/dev
         run: |
+          kustomize build .
           kustomize edit set image tmayweather/clutch-api:${{ steps.meta.outputs.tags }} .
           kustomize edit set image tmayweather/clutch-ui:${{ steps.meta.outputs.tags }} .
           git add .
