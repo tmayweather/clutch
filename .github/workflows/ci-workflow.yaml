@@ -58,7 +58,7 @@ jobs:
       - name: Update backend and frontend image in argocd
         working-directory: ./argocd/projects/overlays/dev
         run: |
-          echo ${{ steps_meta_outputs_tags }}
+          echo ${{ steps.meta.outputs_tags }}
           kustomize edit set image ${{ steps.meta.outputs.tags }} .
           git add .
           git commit -m "Update clutch to version ${{ steps.meta.outputs.tags }}"
