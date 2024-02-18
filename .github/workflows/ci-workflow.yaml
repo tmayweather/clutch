@@ -48,23 +48,17 @@ jobs:
       - name: Get manifest repo
         uses: actions/checkout@v4
         with:
-          repository: tmayweather/argocd-test
+          repository: tmayweather/argocd-tests
           ref: main
           path: argocd/projects/overlays/dev
 
-      - name: Update backend image in argocd
+      - name: Update backend and frontend image in argocd
+        working-directory: argocd/projects/overlays/dev
         run: |
-          cd argocd/projects/overlays/dev
           kustomize edit set image tmayweather/clutch-api:${{ steps.meta_backend.outputs.tags }}
+          kustomize edit set image tmayweather/clutch-ui:${{ steps.meta_backend.outputs.tags }}
           git add kustomize.yaml
-          git commit -m "Update backend to version ${{ steps.meta_backend.outputs.tags }}"
+          git commit -m "Update projecct to version ${{ steps.meta_backend.outputs.tags }}"
           git push
 
-      - name: Update frontend image in argocd
-        run: |
-          cd argocd/projects/overlays/dev
-          kustomize edit set image tmayweather/clutch-ui:${{ steps.meta_frontend.outputs.tags }}
-          git add kustomize.yaml
-          git commit -m "Update frontend to version ${{ steps.meta_frontend.outputs.tags }}"
-          git push
 
