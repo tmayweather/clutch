@@ -20,6 +20,7 @@ jobs:
           images: tmayweather/clutch-ui, tmayweather/clutch-api
           tags: |
             type=sha
+            type=semver,pattern={{version}}
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v1
