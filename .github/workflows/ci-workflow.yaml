@@ -59,7 +59,8 @@ jobs:
         working-directory: ./argocd/projects/overlays/dev
         run: |
           echo ${{ steps.meta.outputs.tags }}
-          kustomize edit set image tmayweather/clutch-ui:f9bf9e0 .
+          kustomize edit set image
+          clutch-ui=docker.io/tmayweather/clutch-ui:latest clutch-ui=docker.io/tmayweather/clutch-ui:d7e8dff .
           git add .
           git commit -m "Update clutch to version ${{ steps.meta.outputs.tags }}"
           git push
