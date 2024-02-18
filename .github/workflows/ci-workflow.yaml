@@ -12,14 +12,17 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+      - name: Get previous tag
+        id: get_tag
+        run: echo "::set-output name=tag::v0.$(( $(git tag | grep -oE '[0-9]+' | sort -rn | head -n 1) + 1 ))"
 
-      - name: Docker meta
-        id: meta
-        uses: docker/metadata-action@v5
-        with:
-          images: tmayweather/clutch-ui
-          tags: |
-            type=sha
+      # - name: Docker meta
+      #   id: meta
+      #   uses: docker/metadata-action@v5
+      #   with:
+      #     images: tmayweather/clutch-ui, tmayweather/clutch-api
+      #     tags: |
+      #       type=sha
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v1
@@ -30,22 +33,13 @@ jobs:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-      - name: Set outputs
-        id: vars
-        run: |
-          echo "sha_short=$(git rev-parse --short HEAD)"
-          echo "::set-output name=sha_short::$(git rev-parse --short HEAD)"
-
-      - name: Check outputs
-        run: echo ${{ steps.vars.outputs.sha_short }}
-
       - name: Build and push frontend
         uses: docker/build-push-action@v5
         with:
           context: frontend
           push: ${{ github.event_name != 'pull_request' }}
           tags: |
-            tmayweather/clutch-ui:${{ steps.vars.outputs.sha_short }}
+            tmayweather/clutch-ui:${{ steps.get_tag.outputs.tag }}
             tmayweather/clutch-ui:latest
           labels: ${{ steps.meta.outputs.labels }}
 
@@ -58,21 +52,21 @@ jobs:
       #     labels: ${{ steps.meta.outputs.labels }}
 
 
-      - name: Get manifest repo
-        uses: actions/checkout@v4
-        with:
-          repository: tmayweather/argocd-test
-          ref: main
-          sparse-checkout: |
-             argocd
+      # - name: Get manifest repo
+      #   uses: actions/checkout@v4
+      #   with:
+      #     repository: tmayweather/argocd-test
+      #     ref: main
+      #     sparse-checkout: |
+      #        argocd
 
-      - name: Update backend and frontend image in argocd
-        working-directory: ./argocd/projects/overlays/dev
-        run: |
-          kustomize edit set image tmayweather/clutch-ui=tmayweather/clutch-ui:${{ github.sha }} .
-          git add .
-          git commit -m "Update clutch to version ${{ steps.meta.outputs.tags }}"
-          git push
+      # - name: Update backend and frontend image in argocd
+      #   working-directory: ./argocd/projects/overlays/dev
+      #   run: |
+      #     kustomize edit set image tmayweather/clutch-ui=tmayweather/clutch-ui:${{ github.sha }} .
+      #     git add .
+      #     git commit -m "Update clutch to version ${{ steps.meta.outputs.tags }}"
+      #     git push
 
 
 
