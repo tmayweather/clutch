@@ -15,14 +15,21 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Docker meta
-        id: meta
-        uses: docker/metadata-action@v5
-        with:
-          images: tmayweather/clutch-ui, tmayweather/clutch-api
-          tags: |
-            type=sha,format=long
-            type=semver,pattern={{version}}
+      # - name: Docker meta
+      #   id: meta
+      #   uses: docker/metadata-action@v5
+      #   with:
+      #     images: tmayweather/clutch-ui, tmayweather/clutch-api
+      #     tags: |
+      #       type=semver,pattern={{version}}
+
+      - name: Get the tag name
+        id: tag
+        run: echo ::set-output name=TAG::${GITHUB_REF#refs/*/}
+
+      - name: Increment the tag
+        id: semver
+        run: echo ::set-output name=NEW_TAG::$(semver -c -i minor ${{ steps.tag.outputs.TAG }})
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v1
@@ -32,13 +39,14 @@ jobs:
         with:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
+          
 
       - name: Build and push frontend
         uses: docker/build-push-action@v5
         with:
           context: frontend
           push: ${{ github.event_name != 'pull_request' }}
-          tags: ${{ steps.meta.outputs.tags }}
+          tags: ${{ steps.semver.outputs.NEW_TAG }}
           labels: ${{ steps.meta.outputs.labels }}
 
       - name: Build and push backend
@@ -46,7 +54,7 @@ jobs:
         with:
           context: backend
           push: ${{ github.event_name != 'pull_request' }}
-          tags: ${{ steps.meta.outputs.tags }}
+          tags: ${{ steps.semver.outputs.NEW_TAG }}
           labels: ${{ steps.meta.outputs.labels }}
 
 
