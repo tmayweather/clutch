@@ -46,24 +46,20 @@ jobs:
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
 
-      - name: Save tag to a file
-        run: |
-          echo "${{ steps.meta_frontend.outputs.tags }}" >> docker-tags.txt
-          echo "${{ steps.meta_backend.outputs.tags }}" >> docker-tags.txt
 
-      - name: Upload Docker image tags as an artifact
-        uses: actions/upload-artifact@v4
+      - name: Get manifest repo
+        uses: actions/checkout@v4
         with:
-          name: docker-tags
-          path: docker-tags.txt
-
-
-      - name: Trigger workflow in argocd-test
-        uses: benc-uk/workflow-dispatch@v1
-        with:
-          token: ${{ secrets.PAT_TOKEN }}
-          repo: tmayweather/argocd-test
-          workflow: update-image.yaml
+          repository: tmayweather/argocd-test
           ref: main
+          path: argocd/projects/overlays/dev
 
+      - name: Update backend and frontend image in argocd
+        run: |
+          cd argocd/projects/overlays/dev
+          kustomize edit set image tmayweather/clutch-api:${{ steps.meta.outputs.tags }}
+          kustomize edit set image tmayweather/clutch-ui:${{ steps.meta.outputs.tags }}
+          git add .
+          git commit -m "Update clutch to version ${{ steps.meta.outputs.tags }}"
+          git push
 
