@@ -46,7 +46,7 @@ jobs:
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
 
-      - name: Save tags to a file
+      - name: Save tag to a file
         run: |
           echo "${{ steps.meta_frontend.outputs.tags }}" >> docker-tags.txt
           echo "${{ steps.meta_backend.outputs.tags }}" >> docker-tags.txt
