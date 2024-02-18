@@ -33,6 +33,14 @@ jobs:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
+      - name: Install semver
+        run: |
+          curl -LO https://github.com/fsaintjacques/semver-tool/archive/v3.0.0.tar.gz
+          tar xzf v3.0.0.tar.gz
+          sudo mv semver-tool-3.0.0/semver /usr/local/bin/
+          rm -f v3.0.0.tar.gz
+        shell: bash
+
       - name: Get the tag name
         id: tag
         run: echo ::set-output name=TAG::${GITHUB_REF#refs/*/}
