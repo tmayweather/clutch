@@ -51,7 +51,7 @@ jobs:
         with:
           repository: tmayweather/argocd-test
           ref: main
-          path: /projects/overlays/dev
+          path: projects/overlays/dev
 
       - name: Update backend image in argocd
         run: |
