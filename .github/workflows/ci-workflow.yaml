@@ -12,20 +12,14 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-      - name: Get latest Docker Hub tag
-        id: get-tag
-        run: |
-          latest_tag=$(curl -s -H "Authorization: Bearer ${{ secrets.DOCKERHUB_TOKEN }}" https://hub.docker.com/v2/repositories/yourusername/yourrepository/tags/?page_size=100 | jq -r '.results[].name' | grep -E 'v[0-9]+\.[0-9]+$' | sort -V | tail -n1)
-          next_version=$(echo $latest_tag | awk -F '.' '{printf "v%.1f", $NF + 0.1}')
-          echo "::set-output name=tag::$next_version"
 
-      # - name: Docker meta
-      #   id: meta
-      #   uses: docker/metadata-action@v5
-      #   with:
-      #     images: tmayweather/clutch-ui, tmayweather/clutch-api
-      #     tags: |
-      #       type=sha
+      - name: Docker meta
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: tmayweather/clutch-ui
+          tags: |
+            type=sha
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v1
@@ -41,9 +35,7 @@ jobs:
         with:
           context: frontend
           push: ${{ github.event_name != 'pull_request' }}
-          tags: |
-            tmayweather/clutch-ui:${{ steps.get_tag.outputs.tag }}
-            tmayweather/clutch-ui:latest
+          tags: ${{ steps.meta.outputs.tag }}
           labels: ${{ steps.meta.outputs.labels }}
 
       # - name: Build and push backend
