@@ -52,7 +52,7 @@ jobs:
           echo "backend-tags: ${{ steps.meta.outputs.tags }}" >> docker-tags.txt
 
       - name: Upload Docker image tags as an artifact
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v4
         with:
           name: docker-tags
           path: docker-tags.txt
