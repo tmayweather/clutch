@@ -12,9 +12,12 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-      - name: Get previous tag
-        id: get_tag
-        run: echo "::set-output name=tag::v0.$(( $(git tag | grep -oE '[0-9]+' | sort -rn | head -n 1) + 1 ))"
+      - name: Get latest Docker Hub tag
+        id: get-tag
+        run: |
+          latest_tag=$(curl -s -H "Authorization: Bearer ${{ secrets.DOCKERHUB_TOKEN }}" https://hub.docker.com/v2/repositories/yourusername/yourrepository/tags/?page_size=100 | jq -r '.results[].name' | grep -E 'v[0-9]+\.[0-9]+$' | sort -V | tail -n1)
+          next_version=$(echo $latest_tag | awk -F '.' '{printf "v%.1f", $NF + 0.1}')
+          echo "::set-output name=tag::$next_version"
 
       # - name: Docker meta
       #   id: meta
