@@ -61,6 +61,7 @@ jobs:
           ref: main
           sparse-checkout: |
             argocd
+          token: ${{ secrets.PAT_TOKEN }}
 
       - name: Set Git user
         run: |
