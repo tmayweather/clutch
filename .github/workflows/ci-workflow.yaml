@@ -85,16 +85,11 @@ jobs:
           frontend_tags=$(echo "${{ steps.meta.outputs.tags }}" | grep 'clutch-ui')
           backend_tags=$(echo "${{ steps.meta.outputs.tags }}" | grep 'clutch-api')
           
-          # Update frontend image
           kustomize edit set image $frontend_tags
-          git add .
-          git commit -m "Update ui to $frontend_tags"
-          git push
-
-          # Update backend image
           kustomize edit set image $backend_tags
           git add .
-          git commit -m "Update api to $backend_tags"
+          git commit -m "Update clutch-ui to $frontend_tags" and clutch-api to $backend_tags"
           git push
+
 
 
