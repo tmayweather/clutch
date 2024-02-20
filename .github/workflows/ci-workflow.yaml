@@ -21,7 +21,7 @@ jobs:
         id: meta
         uses: docker/metadata-action@v5
         with:
-          images: tmayweather/clutch-ui, tmayweather/clutch-api
+          images: tmayweather/clutch-ui
           tags: |
             type=sha
             type=ref,event=tag
