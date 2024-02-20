@@ -62,6 +62,11 @@ jobs:
           sparse-checkout: |
             argocd
 
+      - name: Set Git user
+        run: |
+          git config --global user.email "tnea.mayeather@gmail.com"
+          git config --global user.name "tmayweather"
+
       - name: Update backend and frontend image in argocd
         working-directory: ./argocd/projects/overlays/dev
         run: |
