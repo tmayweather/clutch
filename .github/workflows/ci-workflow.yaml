@@ -23,7 +23,6 @@ jobs:
         with:
           images: |
             tmayweather/clutch-ui
-            tmayweather/clutch-api
           tags: |
             type=sha
             type=ref,event=tag
@@ -47,13 +46,13 @@ jobs:
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
 
-      - name: Build and push backend
-        uses: docker/build-push-action@v5
-        with:
-          context: backend
-          push: ${{ github.event_name != 'pull_request' }}
-          tags: ${{ steps.meta.outputs.tags }}
-          labels: ${{ steps.meta.outputs.labels }}
+      # - name: Build and push backend
+      #   uses: docker/build-push-action@v5
+      #   with:
+      #     context: backend
+      #     push: ${{ github.event_name != 'pull_request' }}
+      #     tags: ${{ steps.meta.outputs.tags }}
+      #     labels: ${{ steps.meta.outputs.labels }}
 
 
       - name: Get manifest repo
@@ -81,19 +80,18 @@ jobs:
       - name: Update backend and frontend image in argocd
         working-directory: ./argocd/projects/overlays/dev
         run: |
-          # Separate frontend and backend tags based on the service name
           frontend_tags=$(echo "${{ steps.meta.outputs.tags }}" | grep 'clutch-ui')
-          backend_tags=$(echo "${{ steps.meta.outputs.tags }}" | grep 'clutch-api')
+          # backend_tags=$(echo "${{ steps.meta.outputs.tags }}" | grep 'clutch-api')
           
           kustomize edit set image $frontend_tags
           git add .
           git commit -m "Update clutch-ui to $frontend_tags"
           git push
 
-          kustomize edit set image $backend_tags
-          git add .
-          git commit -m "Update clutch-api to $backend_tags"
-          git push
+          # kustomize edit set image $backend_tags
+          # git add .
+          # git commit -m "Update clutch-api to $backend_tags"
+          # git push
 
 
 
