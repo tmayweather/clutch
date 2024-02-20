@@ -88,13 +88,13 @@ jobs:
           # Update frontend image
           kustomize edit set image frontend=$frontend_tags
           git add .
-          git commit -m "Update frontend to version $frontend_tags"
+          git commit -m "Update ui to $frontend_tags"
           git push
 
           # Update backend image
           kustomize edit set image backend=$backend_tags
           git add .
-          git commit -m "Update backend to version $backend_tags"
+          git commit -m "Update api to $backend_tags"
           git push
 
 
