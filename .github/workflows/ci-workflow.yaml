@@ -25,7 +25,6 @@ jobs:
           tags: |
             type=sha
             type=ref,event=tag
-            type=ref,event=branch
             type=ref,event=pr
           flavor: latest=auto
      
@@ -66,7 +65,7 @@ jobs:
       - name: Update backend and frontend image in argocd
         working-directory: ./argocd/projects/overlays/dev
         run: |
-          kustomize edit set image tmayweather/clutch-ui:${{ steps.meta.outputs.tags }} .
+          kustomize edit set image ${{ steps.meta.outputs.tags }} .
           git add .
           git commit -m "Update clutch to version ${{ steps.meta.outputs.tags }}"
           git push
