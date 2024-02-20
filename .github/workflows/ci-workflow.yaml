@@ -25,6 +25,8 @@ jobs:
           tags: |
             type=sha
             type=ref,event=tag
+            type=ref,event=branch
+            type=ref,event=pr
           flavor: latest=auto
      
       - name: Set up Docker Buildx
