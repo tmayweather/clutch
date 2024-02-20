@@ -21,7 +21,10 @@ jobs:
         id: meta
         uses: docker/metadata-action@v5
         with:
-          images: tmayweather/clutch-ui
+          images: |
+            tmayweather/clutch-ui
+            tmayweather/clutch-api
+
           tags: |
             type=sha
             type=ref,event=tag
@@ -64,7 +67,7 @@ jobs:
 
       - name: Set Git user
         run: |
-          git config --global user.email "tnea.mayeather@gmail.com"
+          git config --global user.email "tnea.mayweather@gmail.com"
           git config --global user.name "tmayweather"
 
       - name: Update backend and frontend image in argocd
