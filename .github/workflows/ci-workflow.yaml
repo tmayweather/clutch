@@ -21,9 +21,7 @@ jobs:
         id: meta
         uses: docker/metadata-action@v5
         with:
-          images: |
-            tmayweather/clutch-ui
-            tmayweather/clutch-api
+          images: tmayweather/clutch-ui, tmayweather/clutch-api
           tags: |
             type=sha,format=long
       - name: Set up Docker Buildx
