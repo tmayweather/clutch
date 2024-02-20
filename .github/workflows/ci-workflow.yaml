@@ -87,7 +87,7 @@ jobs:
           
           kustomize edit set image $frontend_tags
           git add .
-          git commit -m "Update clutch-ui to $frontend_tags
+          git commit -m "Update clutch-ui to $frontend_tags"
           git push
 
           kustomize edit set image $backend_tags
