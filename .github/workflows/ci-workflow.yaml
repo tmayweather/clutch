@@ -22,7 +22,9 @@ jobs:
         uses: docker/metadata-action@v5
         with:
           images: tmayweather/clutch-ui, tmayweather/clutch-api
-          tags: type=sha
+          tags: |
+            type=sha
+            type=ref,event=tag
           flavor: latest=auto
      
       - name: Set up Docker Buildx
