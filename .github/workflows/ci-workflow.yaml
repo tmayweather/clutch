@@ -25,6 +25,18 @@ jobs:
         with:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
+     
+      - name: Docker meta
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: |
+            tmayweather/clutch-ui
+            tmayweather/clucth-api
+          tags: |
+            type=sha
+            type=ref,event=tag
+            type=ref,event=pr
 
       - name: Build and push frontend
         uses: docker/build-push-action@v5
@@ -42,18 +54,7 @@ jobs:
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
 
-      - name: Docker meta
-        id: meta
-        uses: docker/metadata-action@v5
-        with:
-          images: |
-            tmayweather/clutch-ui
-            tmayweather/clucth-api
-          tags: |
-            type=sha
-            type=ref,event=tag
-            type=ref,event=pr
-          flavor: latest=auto
+
 
       - name: Get manifest repo
         uses: actions/checkout@v4
@@ -69,19 +70,11 @@ jobs:
           git config --global user.email "tnea.mayweather@gmail.com"
           git config --global user.name "tmayweather"
 
-      # - name: Update backend and frontend image in argocd
-      #   working-directory: ./argocd/projects/overlays/dev
-      #   run: |
-      #     kustomize edit set image ${{ steps.meta.outputs.tags }}
-      #     git add .
-      #     git commit -m "Update clutch to version ${{ steps.meta.outputs.tags }}"
-      #     git push
-
       - name: Update backend and frontend image in argocd
         working-directory: ./argocd/projects/overlays/dev
         run: |
           frontend_tags=$(echo "${{ steps.meta.outputs.tags }}" | grep 'clutch-ui')
-          # backend_tags=$(echo "${{ steps.meta.outputs.tags }}" | grep 'clutch-api')
+          backend_tags=$(echo "${{ steps.meta.outputs.tags }}" | grep 'clutch-api')
           
           kustomize edit set image $frontend_tags
           git add .
