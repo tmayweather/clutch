@@ -173,22 +173,24 @@ jobs:
             argocd
           token: ${{ secrets.PAT_TOKEN }}
 
-      - name: Update backend and frontend image in argocd
+      - name: Update frontend image in argocd
         working-directory: ./argocd/projects/overlays/dev
         run: |
-          frontend_tags=$(echo "${{ steps.meta.outputs.tags }}" | grep 'clutch-ui')
-          backend_tags=$(echo "${{ steps.meta.outputs.tags }}" | grep 'clutch-api')
-          
+          frontend_tags=$(echo "${{ needs.build-and-push-frontend.outputs.tags }}" | grep 'clutch-ui')
           kustomize edit set image $frontend_tags
           git add .
           git commit -m "Update clutch-ui to $frontend_tags"
           git push
 
+      - name: Update backend image in argocd
+        working-directory: ./argocd/projects/overlays/dev
+        run: |
+          backend_tags=$(echo "${{ needs.build-and-push-backend.outputs.tags }}" | grep 'clucth-api')
           kustomize edit set image $backend_tags
           git add .
           git commit -m "Update clutch-api to $backend_tags"
           git push
-      # ... other steps for updating ArgoCD
+
 
 
 
