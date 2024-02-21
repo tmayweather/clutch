@@ -7,7 +7,7 @@ from models import Destinations
 
 app = FastAPI()
 
-__version__ = "0.1.0"
+__version__ = "0.2.0"
 
 # Enable CORS
 app.add_middleware(
