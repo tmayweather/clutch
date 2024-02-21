@@ -147,7 +147,7 @@ jobs:
         run: |
           kustomize edit set image ${{ steps.meta.outputs.tags }}
           git add .
-          git commit -m "Update clucth-ui to ${{ steps.meta.outputs.tags }}"
+          git commit -m "Update clutch-ui to ${{ steps.meta.outputs.tags }}"
           git push
 
 
@@ -172,7 +172,7 @@ jobs:
         uses: docker/metadata-action@v5
         with:
           images: |
-            tmayweather/clucth-api
+            tmayweather/clutch-api
           tags: |
             type=sha
             type=ref,event=tag
