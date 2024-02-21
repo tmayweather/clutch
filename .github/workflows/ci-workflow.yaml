@@ -16,18 +16,6 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-
-      - name: Docker meta
-        id: meta
-        uses: docker/metadata-action@v5
-        with:
-          images: |
-            tmayweather/clutch-ui
-          tags: |
-            type=sha
-            type=ref,event=tag
-            type=ref,event=pr
-          flavor: latest=auto
      
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v1
@@ -46,14 +34,26 @@ jobs:
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
 
-      # - name: Build and push backend
-      #   uses: docker/build-push-action@v5
-      #   with:
-      #     context: backend
-      #     push: ${{ github.event_name != 'pull_request' }}
-      #     tags: ${{ steps.meta.outputs.tags }}
-      #     labels: ${{ steps.meta.outputs.labels }}
+      - name: Build and push backend
+        uses: docker/build-push-action@v5
+        with:
+          context: backend
+          push: ${{ github.event_name != 'pull_request' }}
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
 
+      - name: Docker meta
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: |
+            tmayweather/clutch-ui
+            tmayweather/clucth-api
+          tags: |
+            type=sha
+            type=ref,event=tag
+            type=ref,event=pr
+          flavor: latest=auto
 
       - name: Get manifest repo
         uses: actions/checkout@v4
