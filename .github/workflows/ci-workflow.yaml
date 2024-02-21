@@ -123,6 +123,8 @@ jobs:
           push: ${{ github.event_name != 'pull_request' }}
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
+    outputs:
+      frontend-tag: ${{ steps.meta.outputs.tags }}
 
   build-and-push-backend:
     runs-on: ubuntu-latest
@@ -153,7 +155,9 @@ jobs:
           push: ${{ github.event_name != 'pull_request' }}
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
-
+    outputs:
+      backend-tag: ${{ steps.meta.outputs.tags }}
+      
   update-argocd:
     runs-on: ubuntu-latest
     needs: [build-and-push-frontend, build-and-push-backend]
@@ -176,21 +180,20 @@ jobs:
       - name: Update frontend image in argocd
         working-directory: ./argocd/projects/overlays/dev
         run: |
-          frontend_tags=$(echo "${{ needs.build-and-push-frontend.outputs.tags }}" | grep 'clutch-ui')
-          kustomize edit set image $frontend_tags
+          frontend_tag="${{ needs.build-and-push-frontend.outputs.frontend-tag }}"
+          kustomize edit set image tmayweather/clutch-ui=$frontend_tag
           git add .
-          git commit -m "Update clutch-ui to $frontend_tags"
+          git commit -m "Update clutch-ui to $frontend_tag"
           git push
 
       - name: Update backend image in argocd
         working-directory: ./argocd/projects/overlays/dev
         run: |
-          backend_tags=$(echo "${{ needs.build-and-push-backend.outputs.tags }}" | grep 'clucth-api')
-          kustomize edit set image $backend_tags
+          backend_tag="${{ needs.build-and-push-backend.outputs.backend-tag }}"
+          kustomize edit set image tmayweather/clucth-api=$backend_tag
           git add .
-          git commit -m "Update clutch-api to $backend_tags"
+          git commit -m "Update clucth-api to $backend_tag"
           git push
-
 
 
 
